@@ -1,0 +1,34 @@
+Package: svfR
+Type: Package
+Title: Support Vector Frontiers for R language
+Version: 0.1.0
+Authors@R: c(
+    person(given = "Salvador", 
+           family = "Monreal", 
+           role = c("cre", "aut"),
+           email = "smonreal5@alu.ucam.edu",
+           comment = c(ORCID = "")),
+    person(given = "Daniel", 
+           family = "Valero-Carreras", 
+           role = c("cre", "aut"),
+           email = "dvalero@ucam.edu",
+           comment = c(ORCID = "0000-0002-9025-9950")
+          )
+    )
+Maintainer: Daniel Valero-Carreras <dvalero@ucam.edu>
+Description: Includes functions for estimating production frontiers and making ideal output predictions in the context of Data Envelopment Analysis (DEA) using an adaptation of the Support Vector Machines technique called Support Vector Frontiers (Valero-Carreras et al., 2022 <doi:10.1016/j.cor.2022.105765>. Additionally, the package includes code for estimating several technical efficiency measures using different models such as input- and output-oriented radial measures, input- and output-oriented Russell measures, Directional Distance Function (DDF), Weighted Additive Measure (WAM), and Slacks-Based Measurement (SBM).
+License: AGPL (>= 3)
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.3.2
+Imports:
+URL: #Rellenar
+BugReports:
+Suggests: 
+    knitr,
+    rmarkdown,
+    testthat (>= 3.0.0) 
+VignetteBuilder: knitr
+Config/testthat/edition: 3 
+Depends: 
+    R (>= 2.10)

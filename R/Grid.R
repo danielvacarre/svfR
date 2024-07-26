@@ -1,0 +1,107 @@
+#' Grid Class for SVF Model
+#'
+#' This class represents a grid on which the SVF model is performed.
+#' A grid is a partition of the input space divided into cells.
+#'
+#' @param data DataFrame with the dataset on which the grid is built.
+#' @param inputs List of inputs.
+#' @param outputs List of outputs.
+#' @param d Number of partitions in which the grid is divided.
+#' @field data_grid Grid of data, initially NULL.
+#' @field knot_list List of nodes in the grid, initially NULL.
+#'
+#' @return An object of class Grid.
+#' @export
+#' @examples
+#' \dontrun{
+#' data <- data.frame(data)
+#' inputs <- list("x1","x2")
+#' outputs <- list("y1","y2")
+#' grid <- Grid(data, inputs, outputs, 2)
+#' }
+Grid <- function(data, inputs, outputs, d) {
+  if (!is.data.frame(data)) stop("data must be a DataFrame")
+  if (!is.list(inputs)) stop("inputs must be a list")
+  if (!is.list(outputs)) stop("outputs must be a list")
+  if (!is.numeric(d) || length(d) != 1) stop("d must be a single numeric value")
+  structure(
+    list(
+      data = data,
+      inputs = inputs,
+      outputs = outputs,
+      d = d,
+      data_grid = NULL,
+      knot_list = NULL
+    ),
+    class = "Grid"
+  )
+}
+
+#' Find the Cell of an Observation in the Grid
+#'
+#' This method searches for a specific DMU in the grid and returns the cell
+#' in which the observation is located.
+#'
+#' @param grid Object of class Grid.
+#' @param dmu Observation to search for in the grid.
+#' @return Vector with the position of the observation in the grid.
+#' @export
+#' @examples
+#' \dontrun{
+#' grid <- Grid(data, list("x1","x2"), list("y1","y2"), 2)
+#' dmu <- c(1, 2)
+#' search_dmu.Grid(grid, dmu)
+#' }
+search_dmu.Grid <- function(grid, dmu) {
+  if (!inherits(grid, "Grid")) stop("grid must be an object of class Grid")
+  if (!is.numeric(dmu)) stop("dmu must be numeric")
+  r <- lapply(grid$knot_list, unlist)
+  cell <- numeric(length(dmu))
+  for (l in seq_along(dmu)) {
+    encontrado <- FALSE
+    for (m in seq_along(r[[l]])) {
+      trans <- transformation(dmu[l], r[[l]][m])
+      if (trans < 0) {
+        cell[l] <- m - 1
+        encontrado <- TRUE
+        break
+      } else if (trans == 0) {
+        cell[l] <- m
+        encontrado <- TRUE
+        break
+      }
+    }
+    if (!encontrado) {
+      cell[l] <- length(r[[l]])
+    }
+  }
+
+  return(cell)
+}
+
+#' Value Transformation in the Grid
+#'
+#' This function evaluates whether the value of an observation is greater than,
+#' equal to, or less than the value of a node in the grid. It returns 1 if greater,
+#' 0 if equal, and -1 if less.
+#'
+#' @param x_i Value of the cell to evaluate.
+#' @param t_k Value of the node to compare against.
+#' @return Result of the comparison: 1, 0, -1.
+#' @export
+#' @examples
+#' \dontrun{
+#' transformation(0.5, 1)
+#' transformation(1, 1)
+#' transformation(1.5, 1)
+#' }
+transformation <- function(x_i, t_k) {
+  z <- x_i - t_k
+  if (z < 0) {
+    return(-1)
+  } else if (z == 0) {
+    return(0)
+  } else {
+    return(1)
+  }
+}
