@@ -9,4 +9,4 @@
 library(testthat)
 library(svfR)
 
-test_check("Grid")
+test_check("svfR")

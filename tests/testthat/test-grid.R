@@ -2,7 +2,7 @@ library(testthat)
 
 # Datos específicos para las pruebas
 fixed_data <- data.frame(
-  x = list(c(1,2,3,4),c(1,3,1,2)),
+  x = list(c(1,2,3,4),c(1,3,1,2),c(2,4,3,6)),
   y = list(c(2,4,3,5),c(1,2,3,4))
 )
 
@@ -55,19 +55,19 @@ test_that("search_dmu.Grid works correctly n2", {
   expect_equal(cell, c(1,3))
 })
 
-test_that("search_dmu.Grid works correctly n1", {
+test_that("search_dmu.Grid works correctly n3", {
   data <- fixed_data
-  inputs <- list('x1')
+  inputs <- list('x1', 'x2', 'x3')
   outputs <- list('y1','y2')
   d <- 2
 
   grid <- Grid(data, inputs, outputs, d)
-  grid$knot_list <- list(c(1,2.5,4))
-  dmu <- c(2)
+  grid$knot_list <- list(c(1,2.5,4),c(1,2,3),c(2,4,6))
+  dmu <- c(4,5,2)
 
   cell <- search_dmu.Grid(grid, dmu)
 
-  expect_equal(cell, c(1))
+  expect_equal(cell, c(3,3,1))
 })
 
 test_that("transformation works correctly", {
