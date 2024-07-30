@@ -1,10 +1,14 @@
 library(testthat)
 
-# Datos específicos para las pruebas
-fixed_data <- data.frame(
-  x = list(c(1,2,3,4),c(1,3,1,2),c(2,4,3,6)),
-  y = list(c(2,4,3,5),c(1,2,3,4))
-)
+# Define lists of inputs, outputs and the number of partitions
+fixed_data <- data.frame(x1 = c(1, 2, 3, 4),
+                   x2 = c(1, 3, 1, 2),
+                   x3 = c(2, 4, 3, 6),
+                   y1 = c(2, 4, 3, 5),
+                   y2 = c(1, 2, 3, 4))
+inputs <- c("x1", "x2","x3")
+outputs <- c("y1", "y2")
+d <- 2
 
 # Tests for the Grid class and its methods
 test_that("Grid class constructor works correctly", {

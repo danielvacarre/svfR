@@ -11,14 +11,6 @@
 #' @field knot_list List of nodes in the grid, initially NULL.
 #'
 #' @return An object of class Grid.
-#' @export
-#' @examples
-#' \dontrun{
-#' data <- data.frame(data)
-#' inputs <- list("x1","x2")
-#' outputs <- list("y1","y2")
-#' grid <- Grid(data, inputs, outputs, 2)
-#' }
 Grid <- function(data, inputs, outputs, d) {
   if (!is.data.frame(data)) stop("data must be a DataFrame")
   if (!is.list(inputs)) stop("inputs must be a list")
@@ -45,13 +37,6 @@ Grid <- function(data, inputs, outputs, d) {
 #' @param grid Object of class Grid.
 #' @param dmu Observation to search for in the grid.
 #' @return Vector with the position of the observation in the grid.
-#' @export
-#' @examples
-#' \dontrun{
-#' grid <- Grid(data, list("x1","x2"), list("y1","y2"), 2)
-#' dmu <- c(1, 2)
-#' search_dmu.Grid(grid, dmu)
-#' }
 search_dmu.Grid <- function(grid, dmu) {
   if (!inherits(grid, "Grid")) stop("grid must be an object of class Grid")
   if (!is.numeric(dmu)) stop("dmu must be numeric")
@@ -88,13 +73,6 @@ search_dmu.Grid <- function(grid, dmu) {
 #' @param x_i Value of the cell to evaluate.
 #' @param t_k Value of the node to compare against.
 #' @return Result of the comparison: 1, 0, -1.
-#' @export
-#' @examples
-#' \dontrun{
-#' transformation(0.5, 1)
-#' transformation(1, 1)
-#' transformation(1.5, 1)
-#' }
 transformation <- function(x_i, t_k) {
   z <- x_i - t_k
   if (z < 0) {
