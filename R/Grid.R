@@ -7,15 +7,26 @@
 #' @param inputs List of inputs.
 #' @param outputs List of outputs.
 #' @param d Number of partitions in which the grid is divided.
-#' @field data_grid Grid of data, initially NULL.
+#' @field data_grid Grid of intial dataset, initially NULL.
 #' @field knot_list List of nodes in the grid, initially NULL.
 #'
 #' @return An object of class Grid.
 Grid <- function(data, inputs, outputs, d) {
+  # Validate inputs
   if (!is.data.frame(data)) stop("data must be a DataFrame")
   if (!is.list(inputs)) stop("inputs must be a list")
   if (!is.list(outputs)) stop("outputs must be a list")
   if (!is.numeric(d) || length(d) != 1) stop("d must be a single numeric value")
+
+  # Check if inputs and outputs are columns in data
+  data_cols <- colnames(data)
+  invalid_inputs <- setdiff(inputs, data_cols)
+  invalid_outputs <- setdiff(outputs, data_cols)
+
+  if (length(invalid_inputs) > 0) stop("The following inputs are not columns in data: ", paste(invalid_inputs, collapse = ", "))
+  if (length(invalid_outputs) > 0) stop("The following outputs are not columns in data: ", paste(invalid_outputs, collapse = ", "))
+
+  # Create and return the Grid object
   structure(
     list(
       data = data,
