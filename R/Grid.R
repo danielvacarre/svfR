@@ -14,8 +14,8 @@
 Grid <- function(data, inputs, outputs, d) {
   # Validate inputs
   if (!is.data.frame(data)) stop("data must be a DataFrame")
-  if (!is.list(inputs)) stop("inputs must be a list")
-  if (!is.list(outputs)) stop("outputs must be a list")
+  if (!is.character(inputs)) stop("inputs must be a character")
+  if (!is.character(outputs)) stop("outputs must be a character")
   if (!is.numeric(d) || length(d) != 1) stop("d must be a single numeric value")
 
   # Check if inputs and outputs are columns in data
@@ -23,8 +23,15 @@ Grid <- function(data, inputs, outputs, d) {
   invalid_inputs <- setdiff(inputs, data_cols)
   invalid_outputs <- setdiff(outputs, data_cols)
 
-  if (length(invalid_inputs) > 0) stop("The following inputs are not columns in data: ", paste(invalid_inputs, collapse = ", "))
-  if (length(invalid_outputs) > 0) stop("The following outputs are not columns in data: ", paste(invalid_outputs, collapse = ", "))
+  if (length(invalid_inputs) > 0)
+    stop("The following inputs are not columns in data: ",
+         paste(invalid_inputs, collapse = ", "))
+  if (length(invalid_outputs) > 0)
+    stop("The following outputs are not columns in data: ",
+         paste(invalid_outputs, collapse = ", "))
+
+  selected_columns <- c(inputs, outputs)
+  data <- data[selected_columns]
 
   # Create and return the Grid object
   structure(
