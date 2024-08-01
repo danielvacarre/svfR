@@ -13,14 +13,14 @@ d <- 2
 # Tests for the Grid class and its methods
 test_that("Grid class constructor works correctly", {
   data <- fixed_data
-  inputs <- list('x1','x2')
-  outputs <- list('y1','y2')
+  inputs <- c('x1','x2')
+  outputs <- c('y1','y2')
   d <- 2
 
   grid <- Grid(data, inputs, outputs, d)
 
   expect_s3_class(grid, "Grid")
-  expect_equal(grid$data, data)
+  expect_equal(grid$data, data[c(inputs, outputs)])
   expect_equal(grid$inputs, inputs)
   expect_equal(grid$outputs, outputs)
   expect_equal(grid$d, d)
@@ -31,8 +31,8 @@ test_that("Grid class constructor works correctly", {
 
 test_that("search_dmu.Grid works correctly n1", {
   data <- fixed_data
-  inputs <- list('x1')
-  outputs <- list('y1','y2')
+  inputs <- c('x1')
+  outputs <- c('y1','y2')
   d <- 2
 
   grid <- Grid(data, inputs, outputs, d)
@@ -46,8 +46,8 @@ test_that("search_dmu.Grid works correctly n1", {
 
 test_that("search_dmu.Grid works correctly n2", {
   data <- fixed_data
-  inputs <- list('x1','x2')
-  outputs <- list('y1','y2')
+  inputs <- c('x1','x2')
+  outputs <- c('y1','y2')
   d <- 2
 
   grid <- Grid(data, inputs, outputs, d)
@@ -61,8 +61,8 @@ test_that("search_dmu.Grid works correctly n2", {
 
 test_that("search_dmu.Grid works correctly n3", {
   data <- fixed_data
-  inputs <- list('x1', 'x2', 'x3')
-  outputs <- list('y1','y2')
+  inputs <- c('x1', 'x2', 'x3')
+  outputs <- c('y1','y2')
   d <- 2
 
   grid <- Grid(data, inputs, outputs, d)

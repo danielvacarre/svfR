@@ -6,48 +6,105 @@ data <- data.frame(x1 = c(1, 2, 3, 4),
                    x3 = c(2, 4, 3, 6),
                    y1 = c(2, 4, 3, 5),
                    y2 = c(1, 2, 3, 4))
-inputs <- c("x1", "x2","x3")
+inputs <- c("x1", "x2")
 outputs <- c("y1", "y2")
 d <- 2
 
-# Test for SVFGrid constructor
-test_that("SVFGrid function initializes correctly", {
-  grid_obj <- SVFGrid(data, inputs, outputs, d)
+# Test SVFGrid constructor
+test_that("SVFGrid constructor creates an object with correct structure", {
+  grid <- SVFGrid(data = data, inputs = inputs, outputs = outputs, d = d)
 
-  expect_s3_class(grid_obj, "SVFGrid")
-  expect_s3_class(grid_obj, "Grid")
-  expect_equal(grid_obj$data, data)
-  expect_equal(grid_obj$inputs, inputs)
-  expect_equal(grid_obj$outputs, outputs)
-  expect_equal(grid_obj$d, d)
-  expect_true(is.data.frame(grid_obj$df_grid))
-  expect_true(is.data.frame(grid_obj$data_grid))
+  expect_s3_class(grid, "SVFGrid")
+  expect_equal(grid$data, data[c(inputs, outputs)])
+  expect_equal(grid$inputs, inputs)
+  expect_equal(grid$outputs, outputs)
+  expect_equal(grid$d, 2)
+  expect_null(grid$df_grid)
+  expect_null(grid$knot_list)
 })
 
-# Test for search_contiguous_cell
-test_search_contiguous_cell <- function() {
-  test_that("Test for 1-dimensional cell", {
-    cell_1d <- c(2)
-    expected_1d <- list(c(1))
-    result_1d <- search_contiguous_cell(cell_1d)
-    expect_equal(result_1d, expected_1d)
-  })
 
-  test_that("Test for 2-dimensional cell", {
-    cell_2d <- c(2, 2)
-    expected_2d <- list(c(1, 2), c(2, 1))
-    result_2d <- search_contiguous_cell(cell_2d)
-    expect_equal(result_2d, expected_2d)
-  })
+# Test create_grid.SVFGrid function
+test_that("create_grid.SVFGrid creates grid correctly", {
+  grid <- SVFGrid(data, inputs, outputs, d)
+  grid <- create_grid.SVFGrid(grid)
 
-  test_that("Test for 3-dimensional cell", {
-    cell_3d <- c(2, 2, 2)
-    expected_3d <- list(
-      c(1, 2, 2),
-      c(2, 1, 2),
-      c(2, 2, 1)
-    )
-    result_3d <- search_contiguous_cell(cell_3d)
-    expect_equal(result_3d, expected_3d)
-  })
-}
+  expect_s3_class(grid, "SVFGrid")
+  expect_true(!is.null(grid$df_grid))
+  expect_true(!is.null(grid$knot_list))
+
+  # Check df_grid structure
+  expect_true("id_cells" %in% names(grid$df_grid))
+  expect_true("values" %in% names(grid$df_grid))
+  expect_true("phi" %in% names(grid$df_grid))
+  expect_true("c_cells" %in% names(grid$df_grid))
+})
+
+# Test search_contiguous_cell function
+test_that("search_contiguous_cell finds contiguous cells correctly", {
+  cell <- c(2, 2)
+  contiguous <- search_contiguous_cell(cell)
+
+  expected <- list(
+    c(1, 2),
+    c(2, 1)
+  )
+
+  expect_equal(contiguous, expected)
+
+  cell <- c(2, 2, 2)
+  contiguous <- search_contiguous_cell(cell)
+
+  expected <- list(
+    c(1, 2, 2),
+    c(2, 1, 2),
+    c(2, 2, 1)
+  )
+
+  expect_equal(contiguous, expected)
+
+  cell <- c(2, 1, 1)
+  contiguous <- search_contiguous_cell(cell)
+
+  expected <- list(
+    c(1, 1, 1)
+  )
+
+  expect_equal(contiguous, expected)
+
+})
+
+# Test calculate_dmu_phi.SVFGrid function
+test_that("calculate_dmu_phi.SVFGrid calculates phi values correctly", {
+  grid <- SVFGrid(data = data, inputs = inputs, outputs = outputs, d = d)
+  grid <- create_grid.SVFGrid(grid)
+
+  cell <- c(2, 1)  # Example cell for testing
+  phi_values <- calculate_dmu_phi.SVFGrid(grid, cell)
+
+  # The expected phi values need to be computed based on the test data
+  expected_phi_values <- c(1,0,0,1,0,0,0,0,0)
+
+  expect_equal(phi_values[[1]], expected_phi_values)
+})
+
+# Test calculate_df_grid.SVFGrid function
+test_that("calculate_df_grid.SVFGrid updates df_grid correctly", {
+  grid <- SVFGrid(data = data, inputs = inputs, outputs = outputs, d = d)
+  grid <- create_grid.SVFGrid(grid)
+  grid <- calculate_df_grid.SVFGrid(grid)
+
+  expect_true("phi" %in% names(grid$df_grid))
+  expect_true("c_cells" %in% names(grid$df_grid))
+})
+
+# Test calculate_data_grid.SVFGrid function
+test_that("calculate_data_grid.SVFGrid updates data_grid correctly", {
+  grid <- SVFGrid(data = data, inputs = inputs, outputs = outputs, d = d)
+  grid <- create_grid.SVFGrid(grid)
+  grid <- calculate_data_grid.SVFGrid(grid)
+
+  expect_true("phi" %in% names(grid$data_grid))
+  expect_true("c_cells" %in% names(grid$data_grid))
+})
+
